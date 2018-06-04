@@ -59,6 +59,7 @@ sequelize.sync({force: true}).then(() => {
 });
 
 let mockWeapon = {
+    
     Name: "elementum nullam",
     Cost_Number: 89,
     Cost_Denom: "gp",
