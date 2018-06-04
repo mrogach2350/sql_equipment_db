@@ -30,48 +30,59 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api/weapons', (req, res) => {
-    Weapon.findAll().then(results => {
+    Weapon.findAll()
+    .then(results => {
         res.json(results);
-    });
-});
-
-app.get('/api/weapons/:id', (req, res) => {
-    let weaponId = req.params.id;
-    Weapon.findById(weaponId).then(result => {
-        res.json(result);
-    }).catch(err => {
+    })
+    .catch(err => {
         res.json(err);
     })
 });
 
-app.post('/api/weapons/bulk', (req, res) => {
-    let weapons = req.body;
-    Weapon.bulkCreate(weapons).then(result => {
-            res.json(result);
-        }
-    )
+app.get('/api/weapons/:id', (req, res) => {
+    let weaponId = req.params.id;
+    Weapon.findById(weaponId)
+    .then(result => {
+        res.json(result);
+    })
+    .catch(err => {
+        res.json(err);
+    })
 });
 
-sequelize.sync({force: true}).then(() => {
+app.post('/api/weapons', (req, res) => {
+    let weapon = Weapon.build(req.body);
+    weapon.save()
+    .then(result => res.json(result))
+    .catch(err => res.json(err));
+});
+
+app.post('/api/weapons/seed', (req, res) => {
+    let mockWeapons = require('./Mock_Weapons.json');
+    Weapon.bulkCreate(mockWeapons)
+    .then(results => {
+        res.json({
+            success: true,
+            message: `${results.length} weapons created`
+        })
+    })
+    .catch(err => res.json(err));
+});
+
+app.delete('/api/weapons/seed', (req, res) => {
+    Weapon.sync({ force: true })
+    .then(result => {
+        res.json({
+            success: true,
+            message: 'Weapons Table cleared'
+        })
+    })
+    .catch(err => res.json(err));
+});
+
+sequelize.sync().then(() => {
     app.listen(PORT, () => {
         console.log('Listening on PORT: ', PORT);
     });
 });
-
-let mockWeapon = {
-    Name: "elementum nullam",
-    Cost_Number: 89,
-    Cost_Denom: "gp",
-    DMG_S_Number: 2,
-    DMG_S_Dice: "6",
-    DMG_M_Number: 2,
-    DMG_M_Dice: "3",
-    Critical: 2,
-    Crit_Range: "19-20",
-    Range: 9,
-    Weight: 9,
-    Type: "J",
-    Special: "",
-    Masterwork: false
-}
 
