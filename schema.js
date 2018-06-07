@@ -1,59 +1,34 @@
 module.exports = initializeSchema = (Sequelize, sequelize) => {
     const Weapon = sequelize.define('weapon', {
-        Name: {
-            type: Sequelize.STRING
-        },
-        Cost_Number: {
-            type: Sequelize.INTEGER
-        },
-        Cost_Denom: {
-            type: Sequelize.STRING
-        },
-        DMG_S_Number: {
-            type: Sequelize.STRING
-        },
-        DMG_S_Dice: {
-            type: Sequelize.STRING
-        },
-        DMG_M_Number: {
-            type: Sequelize.STRING
-        },
-        DMG_M_Dice: {
-            type: Sequelize.STRING
-        },
-        Critical: {
-            type: Sequelize.STRING
-        },
-        Crit_Range: {
-            type: Sequelize.STRING
-        },
-        Range: {
-            type: Sequelize.STRING
-        },
-        Weight: {
-            type: Sequelize.STRING
-        },
-        Type: {
-            type: Sequelize.STRING
-        },
-        Special: {
-            type: Sequelize.TEXT
-        },
-        Masterwork: {
-            type: Sequelize.BOOLEAN
-        }
+        name: Sequelize.STRING,
+        description: Sequelize.TEXT,
+        weight: Sequelize.STRING,
+        price: Sequelize.STRING,
+        proficiency: Sequelize.STRING,
+        weaponClass: Sequelize.STRING,
+        damageType: Sequelize.STRING,
+        source: Sequelize.STRING,
+        special: Sequelize.STRING,
+        dmgT: Sequelize.STRING,
+        dmgS: Sequelize.STRING,
+        dmgM: Sequelize.STRING,
+        dmgL: Sequelize.STRING,
+        critical: Sequelize.STRING
     });
     
     const Armor = sequelize.define('armor', {
-        Name: {
-            type: Sequelize.STRING
-        },
-        Cost_Number: {
-            type: Sequelize.INTEGER
-        },
-        Cost_Denom: {
-            type: Sequelize.STRING
-        }
+        name: Sequelize.STRING,
+        description: Sequelize.TEXT,
+        weight: Sequelize.STRING,
+        price: Sequelize.TEXT,
+        source: Sequelize.STRING,
+        armorCheckPenalty: Sequelize.TEXT,
+        maxDexBonus: Sequelize.STRING,
+        arcaneSpellFailure: Sequelize.TEXT,
+        armorType: Sequelize.STRING,
+        armorBonus: Sequelize.TEXT,
+        speed20Ft: Sequelize.STRING,
+        speed30fFt: Sequelize.TEXT
     });
 
     module.exports = {

@@ -24,7 +24,7 @@ module.exports = (express, Weapon) => {
         })
     });
 
-    //CREATE
+    //CREATE`
     weaponRouter.post('/weapons', (req, res) => {
         let weapon = Weapon.build(req.body);
         weapon.save()
@@ -66,15 +66,17 @@ module.exports = (express, Weapon) => {
 
     //SEED - CREATE
     weaponRouter.post('/weapons/seed', (req, res) => {
-        let mockWeapons = require('./Mock_Weapons.json');
-        Weapon.bulkCreate(mockWeapons)
-        .then(results => {
-            res.json({
-                success: true,
-                message: `${results.length} weapons created`
+        let baseWeapons = require('../_baseWeapons');
+        Weapon.sync({force:true}).then(() => {
+            Weapon.bulkCreate(baseWeapons)
+            .then(results => {
+                res.json({
+                    success: true,
+                    message: `${results.length} weapons created`
+                })
             })
-        })
-        .catch(err => res.json(err));
+            .catch(err => res.json(err));
+        });
     });
 
     //DELETE - API
