@@ -1,23 +1,27 @@
 require('dotenv').config();
-const Sequelize = require('./db').Sequelize;
+const Sequelize = require('./db').Sequelize,
+    express = require('express'),
+    bodyParser = require('body-parser'),
+    PORT = process.env.PORT || 7000;
+
 const sequelize = require('./db').sequelize;
-const express = require('express');
-const bodyParser = require('body-parser');
 const app = express();
-const PORT = process.env.PORT || 7000;
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 
 //Bring in Each Model
 require('./schema')(Sequelize, sequelize);
-const Armor = require('./schema').Armor;
-const Weapon = require('./schema').Weapon;
+const Armor = require('./schema').Armor,
+    Weapon = require('./schema').Weapon;
 
 app.get('/', (req, res) => {
     res.send('go to /api for more stuff');
 });
 
 //Weapon Router + Controller
-const weaponRouter = require('./routes/weapon.router')(express, Weapon);
-const armorRouter = require('./routes/armor.router')(express, Armor);
+const armorRouter = require('./routes/armor.router')(express, Armor),
+    weaponRouter = require('./routes/weapon.router')(express, Weapon);
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -31,9 +35,24 @@ app.use('/api', armorRouter);
 app.use('/api', weaponRouter);
 
 
+io.on('connection', (socket) => {
+    console.log('user connected');
+
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    });
+
+    socket.on('add-message', (message) => {
+        io.emit('message', {
+            type: 'new-message',
+            text: message
+        });
+    });
+});
+
 //Initialize DB connection and start listening
 sequelize.sync().then(() => {
-    app.listen(PORT, () => {
+    http.listen(PORT, () => {
         console.log('Listening on PORT: ', PORT);
     });
 });
