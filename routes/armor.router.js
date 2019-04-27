@@ -66,7 +66,7 @@ module.exports = (express, Armor) => {
 
     //SEED - CREATE
     armorRouter.post('/armor/seed', (req, res) => {
-        let baseArmor = require('../_baseArmor.json');
+        let baseArmor = require('../data/baseArmor.json');
         Armor.sync({force: true}).then(() => {
             Armor.bulkCreate(baseArmor)
             .then(results => {
