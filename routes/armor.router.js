@@ -4,24 +4,16 @@ module.exports = (express, Armor) => {
     //LIST 
     armorRouter.get('/armor', (req, res) => {
         Armor.findAll()
-        .then(results => {
-            res.json(results);
-        })
-        .catch(err => {
-            res.json(err);
-        })
+        .then(results => res.json(results))
+        .catch(err => res.json(err))
     });
 
     //GET BY ID
     armorRouter.get('/armor/:id', (req, res) => {
         let armorId = req.params.id;
         Armor.findById(armorId)
-        .then(result => {
-            res.json(result);
-        })
-        .catch(err => {
-            res.json(err);
-        })
+        .then(result => res.json(result))
+        .catch(err => res.json(err))
     });
 
     //CREATE`
@@ -39,12 +31,7 @@ module.exports = (express, Armor) => {
         Armor.findById(armorId)
         .then(armor => {
             armor.update(armorData)
-            .then(result => {
-                res.json({
-                    success: true,
-                    data: result
-                });
-            });
+            .then(result => res.json({ success: true, data: result }));
         })
         .catch(err => res.json(err));
     });

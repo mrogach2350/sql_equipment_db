@@ -40,12 +40,18 @@ app.use(function(req, res, next) {
 //Bring in Each Model
 const Weapon = require('./models/Weapon');
 const Armor = require('./models/Armor');
+const Spell = require('./models/Spell');
+const Feat = require('./models/Feat');
 
 //Weapon Router + Controller
 const armorRouter = require('./routes/armor.router')(express, Armor);
 const weaponRouter = require('./routes/weapon.router')(express, Weapon);
+const spellRouter = require('./routes/spell.router')(express, Spell);
+const featRouter = require('./routes/feat.router')(express, Feat);
 app.use('/api', armorRouter);
 app.use('/api', weaponRouter);
+app.use('/api', spellRouter);
+app.use('/api', featRouter);
 
 //Initialize DB connection and start listening
 sequelize.sync().then(() => {
