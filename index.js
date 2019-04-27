@@ -1,26 +1,16 @@
 require('dotenv').config();
-const Sequelize = require('./db').Sequelize,
-    express = require('express'),
-    bodyParser = require('body-parser'),
-    PORT = process.env.PORT || 7000;
-
-const sequelize = require('./db').sequelize;
+const { Sequelize } = require('./db');
+const { sequelize } = require('./db');
+const express = require('express');
+const bodyParser = require('body-parser');
+const PORT = process.env.PORT || 7000;
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
-//Bring in Each Model
-require('./schema')(Sequelize, sequelize);
-const Armor = require('./schema').Armor,
-    Weapon = require('./schema').Weapon;
-
 app.get('/', (req, res) => {
     res.send('go to /api for more stuff');
 });
-
-//Weapon Router + Controller
-const armorRouter = require('./routes/armor.router')(express, Armor),
-    weaponRouter = require('./routes/weapon.router')(express, Weapon);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -31,24 +21,31 @@ app.use(function(req, res, next) {
     next();
 });
 
+// TODO: FINISH IO SETUP WHEN DB IS FINISHED
+// io.on('connection', (socket) => {
+//     console.log('user connected');
+
+//     socket.on('disconnect', () => {
+//         console.log('user disconnected');
+//     });
+
+//     socket.on('add-message', (message) => {
+//         io.emit('message', {
+//             type: 'new-message',
+//             text: message
+//         });
+//     });
+// });
+
+//Bring in Each Model
+const Weapon = require('./models/Weapon');
+const Armor = require('./models/Armor');
+
+//Weapon Router + Controller
+const armorRouter = require('./routes/armor.router')(express, Armor);
+const weaponRouter = require('./routes/weapon.router')(express, Weapon);
 app.use('/api', armorRouter);
 app.use('/api', weaponRouter);
-
-
-io.on('connection', (socket) => {
-    console.log('user connected');
-
-    socket.on('disconnect', () => {
-        console.log('user disconnected');
-    });
-
-    socket.on('add-message', (message) => {
-        io.emit('message', {
-            type: 'new-message',
-            text: message
-        });
-    });
-});
 
 //Initialize DB connection and start listening
 sequelize.sync().then(() => {

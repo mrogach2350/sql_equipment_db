@@ -66,7 +66,7 @@ module.exports = (express, Weapon) => {
 
     //SEED - CREATE
     weaponRouter.post('/weapons/seed', (req, res) => {
-        let baseWeapons = require('../_baseWeapons');
+        let baseWeapons = require('../data/baseWeapons');
         Weapon.sync({force:true}).then(() => {
             Weapon.bulkCreate(baseWeapons)
             .then(results => {
