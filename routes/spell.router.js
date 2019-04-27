@@ -1,4 +1,4 @@
-const { saveSpellsInChunks } = require('../helpers/spellHelpers')
+const { saveInChunks } = require('../helpers/seedHelpers')
 
 module.exports = (express, Spell) => {
     let spellRouter = express.Router();
@@ -75,7 +75,8 @@ module.exports = (express, Spell) => {
     //SEED - CREATE
     spellRouter.post('/spells/seed', (req, res) => {
         let spellData = require('../data/spell.json');
-        Spell.sync({force: true}).then(() => saveSpellsInChunks(spellData, res));
+        Spell.sync({force: true})
+        .then(() => saveInChunks('spell', spellData, Spell, res));
     });
 
     //DELETE - API
