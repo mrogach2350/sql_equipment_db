@@ -1,21 +1,6 @@
 const { saveInChunks } = require('../helpers/seedHelpers')
+const { itemGroupMapping } = require('../constants/magicItem.constants')
 
-const groupKeys = { 
-  weapon: 'Weapon',
-  wonderItem: 'Wondrous Item',
-  cursed: 'Cursed',
-  armor: 'Armor',
-  artifact: 'Artifact',
-  ring: 'Ring',
-  ammo: 'Ammunition',
-  staff: 'Staff',
-  rod: 'Rod',
-  potion: 'Potion',
-  wand: 'Wand',
-  legendWeapon: 'Legendary Weapon',
-  magicTatoo: 'Magical Tattoo',
-  shadowPiercing: 'Shadow Piercing', 
-}
 
 module.exports = (express, MagicItem) => {
   let magicItemRouter = express.Router();
@@ -48,9 +33,24 @@ module.exports = (express, MagicItem) => {
   //GET BY GROUP
   magicItemRouter.get('/magicItems/group/:group', (req, res) => {
     let group = req.params.group
-    let groupKey = groupKeys[group]
+    let groupKey = itemGroupMapping[group]
 
     MagicItem.findAll({ where: { group: groupKey } })
+    .then(result => res.json(result))
+    .catch(err => res.json(err))
+  })
+
+  //GET BY GROUP(S)
+  magicItemRouter.post('/magicItems/group/', (req, res) => {
+    const groupKeys = req.body.groups.map(x => ({
+      group: { $eq: itemGroupMapping[x] }
+    }))
+
+    MagicItem.findAll({ 
+      where: { 
+        $or: groupKeys
+      } 
+    })
     .then(result => res.json(result))
     .catch(err => res.json(err))
   })
